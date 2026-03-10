@@ -6,6 +6,7 @@ import {
   SendMessageResponse,
   TelegramMessage,
 } from './utils/telegram/types.js';
+import { env } from './config/env.js';
 // import { nanoid } from 'nanoid';
 // import { downloadFile } from './utils/download-file.js';
 
@@ -14,7 +15,7 @@ function isValidMessage(message: unknown): message is TelegramMessage {
 }
 
 function isValidUser(message: TelegramMessage): boolean {
-  return message.from?.username === process.env.TELEGRAM_BOT_OWNER_USERNAME;
+  return message.from?.username === env.TELEGRAM_BOT_OWNER_USERNAME;
 }
 
 async function handleUserText(text: string): Promise<string> {

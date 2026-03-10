@@ -1,9 +1,4 @@
+import { env } from '../../config/env.js';
 import { TelegramApi } from './api.js';
 
-const telegramToken = process.env.TELEGRAM_BOT_TOKEN;
-
-if (!telegramToken) {
-  throw new Error('Missing TELEGRAM_BOT_TOKEN in environment variables');
-}
-
-export const telegramApi = new TelegramApi(telegramToken);
+export const telegramApi = new TelegramApi(env.TELEGRAM_BOT_TOKEN);
