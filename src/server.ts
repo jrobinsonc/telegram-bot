@@ -2,7 +2,7 @@ import Fastify from 'fastify'
 import { handleUpdate } from './bot.js'
 import { logger } from './utils/logger.js'
 
-export const app = Fastify({ logger: process.env.NODE_ENV !== 'test' })
+const app = Fastify({ logger: process.env.NODE_ENV !== 'test' })
 
 app.get('/', async function handler (request, reply) {
   return 'hello 👋🏻'
