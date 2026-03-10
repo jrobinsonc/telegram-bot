@@ -1,22 +1,5 @@
-import { jsonRequest } from "../request.js";
-import { TelegramFile, TelegramMessage } from "./types.js";
-
-interface ApiResponseSuccess<TResult> {
-  ok: true,
-  result: TResult
-}
-
-interface ApiResponseError {
-  ok: false,
-  error_code: number,
-  description: string
-}
-
-type ApiResponse<TResult> = ApiResponseSuccess<TResult> | ApiResponseError;
-
-export type SendMessageResponse = ApiResponse<TelegramMessage>;
-
-export type GetFileResponse = ApiResponse<TelegramFile>;
+import { makeJsonRequest } from "../request.js";
+import { GetFileResponse, GetWebhookInfoResponse, SendMessageResponse, SetWebhookResponse } from "./types.js";
 
 export class TelegramApi {
   private readonly token: string;
@@ -33,10 +16,10 @@ export class TelegramApi {
    * https://core.telegram.org/bots/api#sendmessage
    * @param chatId
    * @param text
-   * @returns sendMessage endpoint result
+   * @returns sendMessage endpoint response
    */
   async sendMessage(chatId: number, text: string): Promise<SendMessageResponse> {
-    return jsonRequest('POST', `${this.apiUrl}/sendMessage`, {
+    return makeJsonRequest('POST', `${this.apiUrl}/sendMessage`, {
       chat_id: chatId,
       text: text,
       parse_mode: 'HTML',
@@ -46,9 +29,28 @@ export class TelegramApi {
   /**
    * https://core.telegram.org/bots/api#getfile
    * @param fileId
-   * @returns getFile endpoint result
+   * @returns getFile endpoint response
    */
   async getFile(fileId: string): Promise<GetFileResponse> {
-    return jsonRequest('GET', `${this.apiUrl}/getFile?file_id=${fileId}`);
+    return makeJsonRequest('GET', `${this.apiUrl}/getFile?file_id=${fileId}`);
+  }
+
+  /**
+   * https://core.telegram.org/bots/api#setwebhook
+   * @param url
+   * @returns setWebhook endpoint response
+   */
+  async setWebhook(url: string): Promise<SetWebhookResponse> {
+    return makeJsonRequest('POST', `${this.apiUrl}/setWebhook`, {
+      url: url,
+    });
+  }
+
+  /**
+   * https://core.telegram.org/bots/api#getwebhookinfo
+   * @returns getWebhookInfo endpoint response
+   */
+  async getWebhookInfo(): Promise<GetWebhookInfoResponse> {
+    return makeJsonRequest('POST', `${this.apiUrl}/getWebhookInfo`);
   }
 }

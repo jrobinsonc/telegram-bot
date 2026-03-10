@@ -1,24 +1,17 @@
 import 'dotenv/config';
 import { get } from 'lodash-es';
-import { nanoid } from 'nanoid';
-import { downloadFile } from './utils/download-file.js';
+// import { nanoid } from 'nanoid';
+// import { downloadFile } from './utils/download-file.js';
 import { isPlainObject } from './utils/is-plain-object.js';
-import { GetFileResponse, SendMessageResponse, TelegramApi } from './utils/telegram/api.js';
-import { TelegramMessage } from './utils/telegram/types.js';
-
-const telegramToken = process.env.TELEGRAM_BOT_TOKEN;
-const telegramOwnerUsername = process.env.TELEGRAM_BOT_OWNER_USERNAME;
-
-if (!telegramToken || !telegramOwnerUsername) {
-  throw new Error("Missing TELEGRAM_BOT_TOKEN or TELEGRAM_BOT_OWNER_USERNAME in environment variables");
-}
+import { telegramApi } from './utils/telegram/index.js';
+import { GetFileResponse, SendMessageResponse, TelegramMessage } from './utils/telegram/types.js';
 
 function isValidMessage(message: unknown): message is TelegramMessage {
   return isPlainObject(message) && typeof message.message_id === 'number';
 }
 
 function isValidUser(message: TelegramMessage): boolean {
-  return message.from?.username === telegramOwnerUsername;
+  return message.from?.username === process.env.TELEGRAM_BOT_OWNER_USERNAME;
 }
 
 async function handleUserText(text: string): Promise<string> {
@@ -39,11 +32,11 @@ async function handleUserPhoto(photo: NonNullable<TelegramMessage['photo']>): Pr
     return '❌ Failed to get file';
   }
 
-  const fileUrl = `https://api.telegram.org/file/bot${telegramToken}/${file.result.file_path}`;
-  const fileName = `${nanoid()}.${fileUrl.split('.').pop()?.toLowerCase()}`;
-  const filePath = await downloadFile(fileUrl, { fileName });
+  // const fileUrl = `https://api.telegram.org/file/bot${telegramToken}/${file.result.file_path}`;
+  // const fileName = `${nanoid()}.${fileUrl.split('.').pop()?.toLowerCase()}`;
+  // const filePath = await downloadFile(fileUrl, { fileName });
 
-  return `Yes, photo received: ${filePath}`;
+  return `Yes, photo received!`;
 }
 
 async function handleUserMessage(message: TelegramMessage): Promise<string> {
@@ -57,8 +50,6 @@ async function handleUserMessage(message: TelegramMessage): Promise<string> {
 
   throw new Error('Unknown message type');
 }
-
-const telegramApi = new TelegramApi(telegramToken);
 
 export async function handleUpdate(update: unknown): Promise<void> {
   const message: unknown = get(update, 'message');
