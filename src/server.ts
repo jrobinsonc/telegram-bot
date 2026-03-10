@@ -1,6 +1,8 @@
 import Fastify from 'fastify'
+import { handleUpdate } from './bot.js'
+import { logger } from './utils/logger.js'
 
-export const app = Fastify({ logger: true })
+export const app = Fastify({ logger: process.env.NODE_ENV !== 'test' })
 
 app.get('/', async function handler (request, reply) {
   return 'hello 👋🏻'
@@ -8,14 +10,13 @@ app.get('/', async function handler (request, reply) {
 
 app.post('/telegram-webhook', async (request, reply) => {
   try {
-    const update: unknown = request.body
+    await handleUpdate(request.body);
 
-    // await handleUpdate(update)
+    return { ok: true };
+  } catch (error: unknown) {
+    logger.error(error);
 
-    // res.status(200).json({ ok: true })
-  } catch (error) {
-    // logger.error('Error processing request:', error)
-    // res.status(500).json({ error: 'Internal server error' })
+    return reply.status(500).send({ error: 'An error has occurred.' })
   }
 })
 
