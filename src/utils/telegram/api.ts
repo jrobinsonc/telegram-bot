@@ -1,5 +1,10 @@
-import { makeJsonRequest } from "../request.js";
-import { GetFileResponse, GetWebhookInfoResponse, SendMessageResponse, SetWebhookResponse } from "./types.js";
+import { makeJsonRequest } from '../request.js';
+import {
+  GetFileResponse,
+  GetWebhookInfoResponse,
+  SendMessageResponse,
+  SetWebhookResponse,
+} from './types.js';
 
 export class TelegramApi {
   private readonly token: string;
@@ -18,7 +23,10 @@ export class TelegramApi {
    * @param text
    * @returns sendMessage endpoint response
    */
-  async sendMessage(chatId: number, text: string): Promise<SendMessageResponse> {
+  async sendMessage(
+    chatId: number,
+    text: string,
+  ): Promise<SendMessageResponse> {
     return makeJsonRequest('POST', `${this.apiUrl}/sendMessage`, {
       chat_id: chatId,
       text: text,

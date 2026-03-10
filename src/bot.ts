@@ -1,10 +1,13 @@
 import 'dotenv/config';
-import { get } from 'lodash-es';
+import { get, isPlainObject } from 'lodash-es';
+import { telegramApi } from './utils/telegram/index.js';
+import {
+  GetFileResponse,
+  SendMessageResponse,
+  TelegramMessage,
+} from './utils/telegram/types.js';
 // import { nanoid } from 'nanoid';
 // import { downloadFile } from './utils/download-file.js';
-import { isPlainObject } from './utils/is-plain-object.js';
-import { telegramApi } from './utils/telegram/index.js';
-import { GetFileResponse, SendMessageResponse, TelegramMessage } from './utils/telegram/types.js';
 
 function isValidMessage(message: unknown): message is TelegramMessage {
   return isPlainObject(message) && typeof message.message_id === 'number';
@@ -15,10 +18,14 @@ function isValidUser(message: TelegramMessage): boolean {
 }
 
 async function handleUserText(text: string): Promise<string> {
-  return `💬 You said: "${text}"\n\nI'm echoing your message back to you!`
+  return Promise.resolve(
+    `💬 You said: "${text}"\n\nI'm echoing your message back to you!`,
+  );
 }
 
-async function handleUserPhoto(photo: NonNullable<TelegramMessage['photo']>): Promise<string> {
+async function handleUserPhoto(
+  photo: NonNullable<TelegramMessage['photo']>,
+): Promise<string> {
   // Telegram sends photos in multiple sizes, the last one is the largest
   const highestResPhoto = photo.pop();
 
@@ -26,9 +33,11 @@ async function handleUserPhoto(photo: NonNullable<TelegramMessage['photo']>): Pr
     return '❌ Failed to process photo sizes';
   }
 
-  const file: GetFileResponse = await telegramApi.getFile(highestResPhoto.file_id);
+  const file: GetFileResponse = await telegramApi.getFile(
+    highestResPhoto.file_id,
+  );
 
-  if (file.ok === false) {
+  if (!file.ok) {
     return '❌ Failed to get file';
   }
 
@@ -41,11 +50,11 @@ async function handleUserPhoto(photo: NonNullable<TelegramMessage['photo']>): Pr
 
 async function handleUserMessage(message: TelegramMessage): Promise<string> {
   if (message.text !== undefined) {
-    return await handleUserText(message.text)
+    return await handleUserText(message.text);
   }
 
   if (message.photo !== undefined) {
-    return await handleUserPhoto(message.photo)
+    return await handleUserPhoto(message.photo);
   }
 
   throw new Error('Unknown message type');
@@ -65,10 +74,12 @@ export async function handleUpdate(update: unknown): Promise<void> {
 
   const messageResult: SendMessageResponse = await telegramApi.sendMessage(
     chatId,
-    await handleUserMessage(message)
+    await handleUserMessage(message),
   );
 
-  if (messageResult.ok === false) {
-    throw new Error(`TelegramApi Error: ${messageResult.error_code} ${messageResult.description}`);
+  if (!messageResult.ok) {
+    throw new Error(
+      `TelegramApi Error: ${messageResult.error_code.toString()} ${messageResult.description}`,
+    );
   }
 }

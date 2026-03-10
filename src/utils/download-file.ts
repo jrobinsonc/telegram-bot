@@ -6,10 +6,14 @@ import { join } from 'node:path';
 import { Readable } from 'node:stream';
 import { finished } from 'node:stream/promises';
 
-export async function downloadFile(url: string, args?: { fileName?: string, targetDir?: string }): Promise<string> {
+export async function downloadFile(
+  url: string,
+  args?: { fileName?: string; targetDir?: string },
+): Promise<string> {
   const response: Response = await fetch(url);
 
-  if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+  if (!response.ok)
+    throw new Error(`HTTP error! status: ${response.status.toString()}`);
   if (!response.body) throw new Error('Response body is empty');
 
   let fileName: string | undefined = args?.fileName;
@@ -36,7 +40,11 @@ export async function downloadFile(url: string, args?: { fileName?: string, targ
   const filePath: string = join(targetDir, fileName);
   const fileStream: WriteStream = createWriteStream(filePath);
 
-  await finished(Readable.fromWeb(response.body as any).pipe(fileStream));
+  await finished(
+    Readable.fromWeb(
+      response.body as Parameters<typeof Readable.fromWeb>[0],
+    ).pipe(fileStream),
+  );
 
   return filePath;
 }
