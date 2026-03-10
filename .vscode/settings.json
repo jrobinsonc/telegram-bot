@@ -1,0 +1,23 @@
+{
+  // Configure workspace
+  "npm.packageManager": "pnpm",
+  "typescript.tsdk": "node_modules/typescript/lib",
+  // Code linting
+  "eslint.enable": true, // It's disabled by default
+  "eslint.run": "onSave",
+  // Code formatting and clean-up
+  "prettier.enable": true, // It's disabled by default
+  "editor.formatOnSave": true,
+  "prettier.ignorePath": ".gitignore",
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "eslint.format.enable": true,
+  "[javascript][typescript]": {
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+  },
+  "editor.codeActionsOnSave": {
+    "source.addMissingImports": "explicit",
+    "source.organizeImports": "never",
+    "source.fixAll.eslint": "explicit",
+    "source.removeUnusedImports": "never"
+  }
+}
