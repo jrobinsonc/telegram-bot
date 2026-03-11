@@ -1,6 +1,15 @@
-//TODO: replace this with a real logger.
-export const logger = {
-  error: (error: unknown) => {
-    console.error(error);
+import { pino } from 'pino';
+import { env } from '../config/env.js';
+
+export const loggerConfig = {
+  level: env.LOG_LEVEL,
+  transport: {
+    target: 'pino-pretty',
+    options: {
+      singleLine: true,
+      colorize: true,
+    },
   },
 };
+
+export const logger = pino(loggerConfig);

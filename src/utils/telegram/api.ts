@@ -6,6 +6,7 @@ import {
   SetWebhookResponse,
 } from './types.js';
 
+//TODO: Every time an endpoint is called, check if the response is structurally valid.
 export class TelegramApi {
   private readonly token: string;
 
@@ -45,12 +46,12 @@ export class TelegramApi {
 
   /**
    * https://core.telegram.org/bots/api#setwebhook
-   * @param url
+   * @param webhookUrl
    * @returns setWebhook endpoint response
    */
-  async setWebhook(url: string): Promise<SetWebhookResponse> {
+  async setWebhook(webhookUrl: string): Promise<SetWebhookResponse> {
     return makeJsonRequest('POST', `${this.apiUrl}/setWebhook`, {
-      url: url,
+      url: webhookUrl,
     });
   }
 

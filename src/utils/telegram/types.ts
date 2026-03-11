@@ -42,6 +42,9 @@ export interface TelegramUpdate {
 
 // https://core.telegram.org/bots/api#webhookinfo
 export interface WebhookInfo {
+  /**
+   * The URL may be empty if the webhook has not been set.
+   */
   url: string;
   has_custom_certificate: boolean;
   pending_update_count: number;
@@ -56,6 +59,7 @@ export interface WebhookInfo {
 interface ApiResponseSuccess<TResult> {
   ok: true;
   result: TResult;
+  description?: string;
 }
 
 interface ApiResponseError {
@@ -69,4 +73,4 @@ type ApiResponse<TResult> = ApiResponseSuccess<TResult> | ApiResponseError;
 export type SendMessageResponse = ApiResponse<TelegramMessage>;
 export type GetFileResponse = ApiResponse<TelegramFile>;
 export type GetWebhookInfoResponse = ApiResponse<WebhookInfo>;
-export type SetWebhookResponse = ApiResponse<true>;
+export type SetWebhookResponse = ApiResponse<boolean>;

@@ -1,14 +1,13 @@
 import 'dotenv/config';
 import { get, isPlainObject } from 'lodash-es';
+import { env } from './config/env.js';
+import { logger } from './utils/logger.js';
 import { telegramApi } from './utils/telegram/index.js';
 import {
   GetFileResponse,
   SendMessageResponse,
   TelegramMessage,
 } from './utils/telegram/types.js';
-import { env } from './config/env.js';
-// import { nanoid } from 'nanoid';
-// import { downloadFile } from './utils/download-file.js';
 
 function isValidMessage(message: unknown): message is TelegramMessage {
   return isPlainObject(message) && typeof message.message_id === 'number';
@@ -58,7 +57,11 @@ async function handleUserMessage(message: TelegramMessage): Promise<string> {
     return await handleUserPhoto(message.photo);
   }
 
-  throw new Error('Unknown message type');
+  const logMessage: string = `Invalid message received: ${message.message_id.toString()}`;
+
+  logger.warn(message, logMessage);
+
+  return logMessage;
 }
 
 export async function handleUpdate(update: unknown): Promise<void> {

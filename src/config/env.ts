@@ -8,7 +8,13 @@ export const env = createEnv({
     TELEGRAM_BOT_OWNER_USERNAME: z.string().min(1),
     TELEGRAM_BOT_TOKEN: z.string().min(1),
     PORT: z.coerce.number().default(3000),
-    LOG_LEVEL: z.enum(['debug', 'info', 'warn', 'error']).default('info'),
+    // https://github.com/pinojs/pino/blob/main/docs/api.md#loggerlevel-string-gettersetter
+    LOG_LEVEL: z
+      .enum(['trace', 'debug', 'info', 'warn', 'error', 'fatal', 'silent'])
+      .default('info'),
+    NODE_ENV: z
+      .enum(['development', 'production', 'test'])
+      .default('production'),
   },
   runtimeEnv: process.env,
   emptyStringAsUndefined: true,

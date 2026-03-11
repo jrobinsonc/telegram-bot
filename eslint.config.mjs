@@ -23,6 +23,7 @@ export default defineConfig(
   {
     rules: {
       '@typescript-eslint/no-unused-vars': 'warn',
+      '@typescript-eslint/no-inferrable-types': 'off', // Explicit type annotations improve readability and make intent clearer, especially in functions where type safety is paramount.
     },
   },
 );
