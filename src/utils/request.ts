@@ -1,22 +1,23 @@
+import { request, type Dispatcher } from 'undici';
 import { AppError } from './error.js';
 
 type HTTP_METHODS = 'POST' | 'GET';
 
-export async function makeRequest<T = unknown>(
+export async function makeRequest<TData = unknown>(
   method: HTTP_METHODS,
   url: string,
   args?: { body?: Record<string, unknown>; headers?: Record<string, string> },
-): Promise<T> {
-  let response: Response;
+): Promise<TData> {
+  let response: Dispatcher.ResponseData;
 
   try {
-    response = await fetch(url, {
+    response = await request(url, {
       method,
       headers: args?.headers,
       body:
         method === 'POST' && args?.body !== undefined
           ? JSON.stringify(args.body)
-          : undefined,
+          : null,
     });
   } catch (error: unknown) {
     throw new AppError('network', {
@@ -24,7 +25,7 @@ export async function makeRequest<T = unknown>(
     });
   }
 
-  if (!response.ok) {
+  if (response.statusCode < 200 || response.statusCode > 299) {
     throw new AppError('badExternalServiceResponse', {
       cause: {
         method,
@@ -33,14 +34,14 @@ export async function makeRequest<T = unknown>(
         // logging the URL and only logging the host.
         // url,
         host: new URL(url).host,
-        status: response.status,
+        status: response.statusCode,
         statusText: response.statusText,
-        body: await response.text(),
+        body: await response.body.text(),
       },
     });
   }
 
-  return (await response.json()) as T;
+  return (await response.body.json()) as TData;
 }
 
 export async function makeJsonRequest<T = unknown>(
