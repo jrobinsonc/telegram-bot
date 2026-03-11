@@ -5,8 +5,9 @@ import Fastify, {
   type FastifyRequest,
 } from 'fastify';
 import { handleUpdate } from './bot.js';
+import { env } from './config/env.js';
 import { AppError } from './utils/error.js';
-import { logger, loggerConfig } from './utils/logger.js';
+import { logger } from './utils/logger.js';
 import { telegramApi } from './utils/telegram/index.js';
 import {
   GetWebhookInfoResponse,
@@ -14,7 +15,7 @@ import {
 } from './utils/telegram/types.js';
 
 const serverOptions: FastifyServerOptions = {
-  logger: loggerConfig,
+  logger: env.NODE_ENV === 'test' ? false : true,
   // Tells Fastify to trust the X-Forwarded-* headers set by a reverse proxy
   // (like nginx, Caddy, or a cloud load balancer such as Vercel/Railway/Render).
   trustProxy: true,
