@@ -3,10 +3,11 @@ import { get, isPlainObject } from 'lodash-es';
 import { env } from './config/env.js';
 import { logger } from './utils/logger.js';
 import { telegramApi } from './utils/telegram/index.js';
-import {
+import type {
   GetFileResponse,
   SendMessageResponse,
   TelegramMessage,
+  TelegramPhotoSize,
 } from './utils/telegram/types.js';
 
 function isValidMessage(message: unknown): message is TelegramMessage {
@@ -27,7 +28,7 @@ async function handleUserPhoto(
   photo: NonNullable<TelegramMessage['photo']>,
 ): Promise<string> {
   // Telegram sends photos in multiple sizes, the last one is the largest
-  const highestResPhoto = photo.pop();
+  const highestResPhoto: TelegramPhotoSize | undefined = photo.pop();
 
   if (highestResPhoto === undefined) {
     return '❌ Failed to process photo sizes';

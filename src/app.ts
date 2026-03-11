@@ -1,15 +1,11 @@
-import Fastify, {
-  FastifyError,
-  FastifyServerOptions,
-  type FastifyReply,
-  type FastifyRequest,
-} from 'fastify';
+import type { FastifyError, FastifyServerOptions } from 'fastify';
+import Fastify, { type FastifyReply, type FastifyRequest } from 'fastify';
 import { handleUpdate } from './bot.js';
 import { env } from './config/env.js';
 import { AppError } from './utils/error.js';
 import { logger } from './utils/logger.js';
 import { telegramApi } from './utils/telegram/index.js';
-import {
+import type {
   GetWebhookInfoResponse,
   SetWebhookResponse,
 } from './utils/telegram/types.js';
@@ -20,6 +16,7 @@ const serverOptions: FastifyServerOptions = {
   // (like nginx, Caddy, or a cloud load balancer such as Vercel/Railway/Render).
   trustProxy: true,
 };
+
 export const app = Fastify(serverOptions);
 
 app.setNotFoundHandler({}, (_, reply: FastifyReply) => {

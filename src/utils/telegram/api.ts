@@ -1,5 +1,5 @@
 import { makeJsonRequest } from '../request.js';
-import {
+import type {
   GetFileResponse,
   GetWebhookInfoResponse,
   SendMessageResponse,
