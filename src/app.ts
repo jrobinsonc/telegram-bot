@@ -1,5 +1,10 @@
-import type { FastifyError, FastifyServerOptions } from 'fastify';
+import type {
+  FastifyError,
+  FastifyInstance,
+  FastifyServerOptions,
+} from 'fastify';
 import Fastify, { type FastifyReply, type FastifyRequest } from 'fastify';
+import type { IncomingMessage, ServerResponse } from 'http';
 import { handleUpdate } from './bot.js';
 import { env } from './config/env.js';
 import { AppError } from './utils/error.js';
@@ -17,15 +22,15 @@ const serverOptions: FastifyServerOptions = {
   trustProxy: true,
 };
 
-export const app = Fastify(serverOptions);
+export const app: FastifyInstance = Fastify(serverOptions);
 
 app.setNotFoundHandler({}, (_, reply: FastifyReply) => {
   reply.status(404).send({ error: 'Not found' });
 });
 
 app.setErrorHandler((error: FastifyError, _, reply: FastifyReply) => {
-  let statusCode = 500;
-  let message = 'An error has occurred.';
+  let statusCode: number = 500;
+  let message: string = 'An error has occurred.';
 
   if (AppError.is(error)) {
     statusCode = error.statusCode;
@@ -78,3 +83,11 @@ app.get('/set-telegram-webhook', async (request: FastifyRequest) => {
 
   throw new AppError('badExternalServiceData', { cause: response });
 });
+
+export default async (
+  req: IncomingMessage,
+  res: ServerResponse,
+): Promise<void> => {
+  await app.ready();
+  app.server.emit('request', req, res);
+};

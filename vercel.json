@@ -1,17 +1,5 @@
 {
   "version": 2,
   "installCommand": "pnpm install --frozen-lockfile",
-  "framework": "fastify",
-  "builds": [
-    {
-      "src": "src/server.ts",
-      "use": "@vercel/node"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "src/server.ts"
-    }
-  ]
+  "framework": "fastify"
 }
