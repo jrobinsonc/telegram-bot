@@ -20,10 +20,6 @@ export default defineConfig(
     },
   },
   {
-    files: ['**/*.js', '**/*.cjs', '**/*.mjs'],
-    extends: [tseslint.configs.disableTypeChecked],
-  },
-  {
     rules: {
       // ================================================================
       //  Error Prevention - Catch bugs and potential runtime errors
@@ -125,6 +121,16 @@ export default defineConfig(
       '@typescript-eslint/no-unsafe-member-access': 'warn',
       '@typescript-eslint/no-unsafe-return': 'warn',
       '@typescript-eslint/no-implied-eval': 'warn', // Prevents code injection
+    },
+  },
+  {
+    files: ['**/*.js', '**/*.cjs', '**/*.mjs'],
+    extends: [tseslint.configs.disableTypeChecked],
+  },
+  {
+    files: ['**/*.test.ts'],
+    rules: {
+      '@typescript-eslint/typedef': 'off',
     },
   },
 );
