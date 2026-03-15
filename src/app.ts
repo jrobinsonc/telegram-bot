@@ -66,18 +66,6 @@ app.get('/telegram-webhook', async () => {
   throw new AppError('badExternalServiceData', { cause: response });
 });
 
-app.get('/set-telegram-webhook', async (request: FastifyRequest) => {
-  const response: SetWebhookResponse = await telegramApi.setWebhook(
-    `https://${request.host}/telegram-webhook`,
-  );
-
-  if (response.ok && response.result) {
-    return { data: response.description };
-  }
-
-  throw new AppError('badExternalServiceData', { cause: response });
-});
-
 export default async (
   req: IncomingMessage,
   res: ServerResponse,

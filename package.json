@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "check-types": "tsc --noEmit",
-    "check-env": "tsx src/scripts/check-env.ts",
+    "check-env": "tsx scripts/check-env.ts",
+    "set-telegram-webhook": "tsx scripts/set-telegram-webhook.ts",
     "lint": "eslint ./src",
     "test": "NODE_OPTIONS=--experimental-vm-modules jest",
     "test:watch": "NODE_OPTIONS=--experimental-vm-modules jest --watch",

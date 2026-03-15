@@ -47,11 +47,16 @@ export class TelegramApi {
   /**
    * https://core.telegram.org/bots/api#setwebhook
    * @param webhookUrl
+   * @param secretToken
    * @returns setWebhook endpoint response
    */
-  async setWebhook(webhookUrl: string): Promise<SetWebhookResponse> {
+  async setWebhook(
+    webhookUrl: string,
+    secretToken?: string,
+  ): Promise<SetWebhookResponse> {
     return makeJsonRequest('POST', `${this.apiUrl}/setWebhook`, {
       url: webhookUrl,
+      secret_token: secretToken,
     });
   }
 
