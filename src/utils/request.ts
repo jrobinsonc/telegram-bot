@@ -41,7 +41,13 @@ export async function makeRequest<TData = unknown>(
     });
   }
 
-  return (await response.body.json()) as TData;
+  try {
+    return (await response.body.json()) as TData;
+  } catch {
+    throw new AppError('badExternalServiceResponse', {
+      message: 'Invalid JSON provided.',
+    });
+  }
 }
 
 export async function makeJsonRequest<T = unknown>(

@@ -21,10 +21,15 @@ export class AppError extends Error {
   constructor(
     public type: AppErrorType,
     public details?: {
+      message?: string;
       cause?: unknown;
     },
   ) {
-    super(errorMessages[type]);
+    super(
+      details?.message !== undefined
+        ? `${errorMessages[type]}: ${details.message}`
+        : errorMessages[type],
+    );
     this.name = this.constructor.name;
     this.statusCode = errorStatusCodes[type];
   }

@@ -29,13 +29,10 @@ app.setNotFoundHandler({}, (_, reply: FastifyReply) => {
 });
 
 app.setErrorHandler((error: FastifyError, _, reply: FastifyReply) => {
-  let statusCode: number = 500;
-  let message: string = 'An error has occurred.';
-
-  if (AppError.is(error)) {
-    statusCode = error.statusCode;
-    message = error.message;
-  }
+  const { statusCode, message }: { statusCode: number; message: string } =
+    AppError.is(error)
+      ? error
+      : { statusCode: 500, message: 'An error has occurred.' };
 
   if (!AppError.is(error) || statusCode >= 500) {
     logger.error(error, message);
@@ -60,11 +57,8 @@ app.get('/telegram-webhook', async () => {
   const response: GetWebhookInfoResponse = await telegramApi.getWebhookInfo();
 
   if (response.ok) {
-    let data: string = response.result.url;
-
-    if (data === '') {
-      data = 'The webhook has not been set up yet.';
-    }
+    const data: string =
+      response.result.url || 'The webhook has not been set up yet.';
 
     return { data };
   }
